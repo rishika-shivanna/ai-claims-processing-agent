@@ -1,0 +1,282 @@
+{
+  "claim_id": "CLM-003",
+  "status": "needs_review",
+  "extracted_fields": {
+    "vin": {
+      "value": "2T1BURHE5JC034127",
+      "confidence": "medium",
+      "source": "police_report.png",
+      "reason": "Best guess based on highest extraction confidence (medium), supported by 2 documents."
+    },
+    "date_of_loss": {
+      "value": "03/05/2026",
+      "confidence": "high",
+      "source": "police_report.png",
+      "reason": "Best guess based on highest extraction confidence (high), supported by 2 documents."
+    },
+    "insurance_payout": {
+      "value": "23800.00",
+      "confidence": "high",
+      "source": "settlement_breakdown.pdf",
+      "reason": "Best guess based on preferred the non-superseded document(s), highest extraction confidence (high)."
+    },
+    "loan_balance": {
+      "value": "27650.00",
+      "confidence": "high",
+      "source": "finance_agreement.pdf",
+      "reason": null
+    }
+  },
+  "documents": {
+    "identified": [
+      {
+        "file": "finance_agreement.pdf",
+        "type": "finance_agreement"
+      },
+      {
+        "file": "police_report.png",
+        "type": "police_report"
+      },
+      {
+        "file": "settlement_breakdown.pdf",
+        "type": "settlement_breakdown"
+      },
+      {
+        "file": "settlement_breakdown_v2.pdf",
+        "type": "settlement_breakdown"
+      }
+    ],
+    "missing": [],
+    "duplicates": [
+      {
+        "doc_type": "settlement_breakdown",
+        "files": [
+          "settlement_breakdown.pdf",
+          "settlement_breakdown_v2.pdf"
+        ],
+        "relationship": "superseding_revision",
+        "note": "2 versions found; treated as revised statement, using the highest version number as authoritative."
+      }
+    ]
+  },
+  "issues": [
+    {
+      "type": "inconsistency",
+      "description": "VIN disagrees across documents",
+      "details": "police_report.png: 2T1BURHESJCO34127; finance_agreement.pdf: 2T1BURHE5JC034182; settlement_breakdown.pdf: 2T1BURHE5JC034127; settlement_breakdown_v2.pdf: 2T1BURHE5JC034127",
+      "guess": "2T1BURHE5JC034127",
+      "guess_reason": "Best guess based on highest extraction confidence (medium), supported by 2 documents."
+    },
+    {
+      "type": "inconsistency",
+      "description": "date of loss disagrees across documents",
+      "details": "police_report.png: 03/08/2026; settlement_breakdown.pdf: 03/05/2026; settlement_breakdown_v2.pdf: 03/05/2026",
+      "guess": "03/05/2026",
+      "guess_reason": "Best guess based on highest extraction confidence (high), supported by 2 documents."
+    },
+    {
+      "type": "inconsistency",
+      "description": "insurance payout amount disagrees across documents",
+      "details": "settlement_breakdown.pdf: 24100.00; settlement_breakdown_v2.pdf: 23800.00",
+      "guess": "23800.00",
+      "guess_reason": "Best guess based on preferred the non-superseded document(s), highest extraction confidence (high)."
+    }
+  ],
+  "next_action": {
+    "type": "escalate",
+    "message": "Conflicting values across official documents that customer input can't resolve -- route to an adjuster to confirm the correct figure."
+  },
+  "llm_backend": null,
+  "customer_replied": false,
+  "tools_used": [
+    {
+      "tool": "document_reader",
+      "input": "finance_agreement.pdf",
+      "result": {
+        "method": "pdf_text",
+        "quality": "high"
+      }
+    },
+    {
+      "tool": "document_classifier",
+      "input": "finance_agreement.pdf",
+      "result": {
+        "doc_type": "finance_agreement",
+        "confidence": 0.95
+      }
+    },
+    {
+      "tool": "document_reader",
+      "input": "police_report.png",
+      "result": {
+        "method": "ocr",
+        "quality": "medium"
+      }
+    },
+    {
+      "tool": "document_classifier",
+      "input": "police_report.png",
+      "result": {
+        "doc_type": "police_report",
+        "confidence": 0.95
+      }
+    },
+    {
+      "tool": "document_reader",
+      "input": "settlement_breakdown.pdf",
+      "result": {
+        "method": "pdf_text",
+        "quality": "high"
+      }
+    },
+    {
+      "tool": "document_classifier",
+      "input": "settlement_breakdown.pdf",
+      "result": {
+        "doc_type": "settlement_breakdown",
+        "confidence": 0.95
+      }
+    },
+    {
+      "tool": "document_reader",
+      "input": "settlement_breakdown_v2.pdf",
+      "result": {
+        "method": "pdf_text",
+        "quality": "high"
+      }
+    },
+    {
+      "tool": "document_classifier",
+      "input": "settlement_breakdown_v2.pdf",
+      "result": {
+        "doc_type": "settlement_breakdown",
+        "confidence": 0.95
+      }
+    },
+    {
+      "tool": "duplicate_detector",
+      "input": [
+        "settlement_breakdown"
+      ],
+      "result": [
+        {
+          "doc_type": "settlement_breakdown",
+          "relationship": "superseding_revision",
+          "note": "2 versions found; treated as revised statement, using the highest version number as authoritative."
+        }
+      ]
+    },
+    {
+      "tool": "field_extractor",
+      "input": "finance_agreement.pdf",
+      "result": {
+        "vin": "2T1BURHE5JC034182",
+        "date_of_loss": null,
+        "insurance_payout": null,
+        "loan_balance": "27650.00"
+      }
+    },
+    {
+      "tool": "field_extractor",
+      "input": "police_report.png",
+      "result": {
+        "vin": "2T1BURHESJCO34127",
+        "date_of_loss": "03/08/2026",
+        "insurance_payout": null,
+        "loan_balance": null
+      }
+    },
+    {
+      "tool": "field_extractor",
+      "input": "settlement_breakdown_v2.pdf",
+      "result": {
+        "vin": "2T1BURHE5JC034127",
+        "date_of_loss": "03/05/2026",
+        "insurance_payout": "23800.00",
+        "loan_balance": "27650.00"
+      }
+    },
+    {
+      "tool": "field_extractor",
+      "input": "settlement_breakdown.pdf",
+      "result": {
+        "vin": "2T1BURHE5JC034127",
+        "date_of_loss": "03/05/2026",
+        "insurance_payout": "24100.00",
+        "loan_balance": "27650.00"
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "vin",
+      "result": {
+        "value": "2T1BURHE5JC034127",
+        "conflict": true
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "date_of_loss",
+      "result": {
+        "value": "03/05/2026",
+        "conflict": true
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "insurance_payout",
+      "result": {
+        "value": "23800.00",
+        "conflict": true
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "loan_balance",
+      "result": {
+        "value": "27650.00",
+        "conflict": false
+      }
+    },
+    {
+      "tool": "field_validator",
+      "input": {
+        "vin": "2T1BURHE5JC034127"
+      },
+      "result": {
+        "valid": true,
+        "reason": null
+      }
+    },
+    {
+      "tool": "field_validator",
+      "input": {
+        "date_of_loss": "03/05/2026"
+      },
+      "result": {
+        "valid": true,
+        "reason": null
+      }
+    },
+    {
+      "tool": "field_validator",
+      "input": {
+        "insurance_payout": "23800.00"
+      },
+      "result": {
+        "valid": true,
+        "reason": null
+      }
+    },
+    {
+      "tool": "field_validator",
+      "input": {
+        "loan_balance": "27650.00"
+      },
+      "result": {
+        "valid": true,
+        "reason": null
+      }
+    }
+  ]
+}

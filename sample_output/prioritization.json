@@ -1,0 +1,24 @@
+{
+  "processing_order": [
+    {
+      "claim_id": "CLM-002",
+      "reason": "Customer has already replied and narrowed the gap; one more short exchange likely closes this."
+    },
+    {
+      "claim_id": "CLM-001",
+      "reason": "Official documents disagree on a key field -- needs adjuster judgment, not customer follow-up (even if a document is also still missing)."
+    },
+    {
+      "claim_id": "CLM-004",
+      "reason": "Official documents disagree on a key field -- needs adjuster judgment, not customer follow-up (even if a document is also still missing)."
+    },
+    {
+      "claim_id": "CLM-003",
+      "reason": "Official documents disagree on a key field -- needs adjuster judgment, not customer follow-up (even if a document is also still missing)."
+    },
+    {
+      "claim_id": "CLM-005",
+      "reason": "Official documents disagree on a key field -- needs adjuster judgment, not customer follow-up (even if a document is also still missing)."
+    }
+  ]
+}

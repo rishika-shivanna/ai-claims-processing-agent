@@ -1,0 +1,7 @@
+pdfplumber
+pymupdf
+pytesseract
+pillow
+opencv-python-headless
+numpy
+anthropic

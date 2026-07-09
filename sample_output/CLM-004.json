@@ -1,0 +1,225 @@
+{
+  "claim_id": "CLM-004",
+  "status": "incomplete",
+  "extracted_fields": {
+    "vin": {
+      "value": null,
+      "confidence": "low",
+      "source": "police_report.png",
+      "reason": "Multiple conflicting values with equal confidence/support -- no reliable guess; needs human review."
+    },
+    "date_of_loss": {
+      "value": "12/19/2025",
+      "confidence": "medium",
+      "source": "police_report.png",
+      "reason": "Low-confidence extraction; see tools_used log."
+    },
+    "insurance_payout": {
+      "value": null,
+      "confidence": "low",
+      "source": "settlement_breakdown.png",
+      "reason": "Low-confidence extraction; see tools_used log."
+    },
+    "loan_balance": {
+      "value": "19200.00",
+      "confidence": "medium",
+      "source": "finance_agreement.png",
+      "reason": "Low-confidence extraction; see tools_used log."
+    }
+  },
+  "documents": {
+    "identified": [
+      {
+        "file": "finance_agreement.png",
+        "type": "finance_agreement"
+      },
+      {
+        "file": "police_report.png",
+        "type": "police_report"
+      },
+      {
+        "file": "settlement_breakdown.png",
+        "type": "settlement_breakdown"
+      },
+      {
+        "file": "tow_receipt.png",
+        "type": "tow_receipt"
+      }
+    ],
+    "missing": [],
+    "duplicates": []
+  },
+  "issues": [
+    {
+      "type": "inconsistency",
+      "description": "VIN disagrees across documents",
+      "details": "police_report.png: SYJJEIEA7K; finance_agreement.png: SYJSETEA7K; settlement_breakdown.png: 5YJ3E1EA7K",
+      "guess": null,
+      "guess_reason": "Multiple conflicting values with equal confidence/support -- no reliable guess; needs human review."
+    }
+  ],
+  "next_action": {
+    "type": "escalate",
+    "message": "Conflicting values across official documents that customer input can't resolve -- route to an adjuster to confirm the correct figure. Separately, while this is under adjuster review: still needs from customer: insurance_payout."
+  },
+  "llm_backend": null,
+  "customer_replied": false,
+  "tools_used": [
+    {
+      "tool": "document_reader",
+      "input": "finance_agreement.png",
+      "result": {
+        "method": "ocr",
+        "quality": "medium"
+      }
+    },
+    {
+      "tool": "document_classifier",
+      "input": "finance_agreement.png",
+      "result": {
+        "doc_type": "finance_agreement",
+        "confidence": 0.95
+      }
+    },
+    {
+      "tool": "document_reader",
+      "input": "police_report.png",
+      "result": {
+        "method": "ocr",
+        "quality": "medium"
+      }
+    },
+    {
+      "tool": "document_classifier",
+      "input": "police_report.png",
+      "result": {
+        "doc_type": "police_report",
+        "confidence": 0.95
+      }
+    },
+    {
+      "tool": "document_reader",
+      "input": "settlement_breakdown.png",
+      "result": {
+        "method": "ocr",
+        "quality": "medium"
+      }
+    },
+    {
+      "tool": "document_classifier",
+      "input": "settlement_breakdown.png",
+      "result": {
+        "doc_type": "settlement_breakdown",
+        "confidence": 0.95
+      }
+    },
+    {
+      "tool": "document_reader",
+      "input": "tow_receipt.png",
+      "result": {
+        "method": "ocr",
+        "quality": "low"
+      }
+    },
+    {
+      "tool": "document_classifier",
+      "input": "tow_receipt.png",
+      "result": {
+        "doc_type": "tow_receipt",
+        "confidence": 0.95
+      }
+    },
+    {
+      "tool": "field_extractor",
+      "input": "finance_agreement.png",
+      "result": {
+        "vin": "SYJSETEA7K",
+        "date_of_loss": null,
+        "insurance_payout": null,
+        "loan_balance": "19200.00"
+      }
+    },
+    {
+      "tool": "field_extractor",
+      "input": "police_report.png",
+      "result": {
+        "vin": "SYJJEIEA7K",
+        "date_of_loss": "12/19/2025",
+        "insurance_payout": null,
+        "loan_balance": null
+      }
+    },
+    {
+      "tool": "field_extractor",
+      "input": "settlement_breakdown.png",
+      "result": {
+        "vin": "5YJ3E1EA7K",
+        "date_of_loss": "12/19/2025",
+        "insurance_payout": null,
+        "loan_balance": "19200.00"
+      }
+    },
+    {
+      "tool": "field_extractor",
+      "input": "tow_receipt.png",
+      "result": {
+        "vin": "SYJJELEATK",
+        "date_of_loss": "12/19/2025",
+        "insurance_payout": null,
+        "loan_balance": null
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "vin",
+      "result": {
+        "value": null,
+        "conflict": true
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "date_of_loss",
+      "result": {
+        "value": "12/19/2025",
+        "conflict": false
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "insurance_payout",
+      "result": {
+        "value": null,
+        "conflict": false
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "loan_balance",
+      "result": {
+        "value": "19200.00",
+        "conflict": false
+      }
+    },
+    {
+      "tool": "field_validator",
+      "input": {
+        "date_of_loss": "12/19/2025"
+      },
+      "result": {
+        "valid": true,
+        "reason": null
+      }
+    },
+    {
+      "tool": "field_validator",
+      "input": {
+        "loan_balance": "19200.00"
+      },
+      "result": {
+        "valid": true,
+        "reason": null
+      }
+    }
+  ]
+}

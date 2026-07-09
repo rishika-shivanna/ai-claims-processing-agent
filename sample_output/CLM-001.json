@@ -1,0 +1,245 @@
+{
+  "claim_id": "CLM-001",
+  "status": "needs_review",
+  "extracted_fields": {
+    "vin": {
+      "value": "1HGCM82633A004352",
+      "confidence": "high",
+      "source": "police_report.pdf",
+      "reason": "Best guess based on highest extraction confidence (high), supported by 2 documents."
+    },
+    "date_of_loss": {
+      "value": "02/14/2026",
+      "confidence": "high",
+      "source": "police_report.pdf",
+      "reason": null
+    },
+    "insurance_payout": {
+      "value": "18750.00",
+      "confidence": "high",
+      "source": "settlement_breakdown.pdf",
+      "reason": null
+    },
+    "loan_balance": {
+      "value": "22340.55",
+      "confidence": "high",
+      "source": "finance_agreement.png",
+      "reason": null
+    }
+  },
+  "documents": {
+    "identified": [
+      {
+        "file": "adjuster_note.png",
+        "type": "adjuster_note"
+      },
+      {
+        "file": "finance_agreement.png",
+        "type": "finance_agreement"
+      },
+      {
+        "file": "police_report.pdf",
+        "type": "police_report"
+      },
+      {
+        "file": "settlement_breakdown.pdf",
+        "type": "settlement_breakdown"
+      }
+    ],
+    "missing": [],
+    "duplicates": []
+  },
+  "issues": [
+    {
+      "type": "inconsistency",
+      "description": "VIN disagrees across documents",
+      "details": "police_report.pdf: 1HGCM82633A004352; finance_agreement.png: 1HGCMB2633A004352; settlement_breakdown.pdf: 1HGCM82633A004352",
+      "guess": "1HGCM82633A004352",
+      "guess_reason": "Best guess based on highest extraction confidence (high), supported by 2 documents."
+    }
+  ],
+  "next_action": {
+    "type": "escalate",
+    "message": "Conflicting values across official documents that customer input can't resolve -- route to an adjuster to confirm the correct figure."
+  },
+  "llm_backend": null,
+  "customer_replied": false,
+  "tools_used": [
+    {
+      "tool": "document_reader",
+      "input": "adjuster_note.png",
+      "result": {
+        "method": "ocr",
+        "quality": "medium"
+      }
+    },
+    {
+      "tool": "document_classifier",
+      "input": "adjuster_note.png",
+      "result": {
+        "doc_type": "adjuster_note",
+        "confidence": 0.95
+      }
+    },
+    {
+      "tool": "document_reader",
+      "input": "finance_agreement.png",
+      "result": {
+        "method": "ocr",
+        "quality": "medium"
+      }
+    },
+    {
+      "tool": "document_classifier",
+      "input": "finance_agreement.png",
+      "result": {
+        "doc_type": "finance_agreement",
+        "confidence": 0.95
+      }
+    },
+    {
+      "tool": "document_reader",
+      "input": "police_report.pdf",
+      "result": {
+        "method": "pdf_text",
+        "quality": "high"
+      }
+    },
+    {
+      "tool": "document_classifier",
+      "input": "police_report.pdf",
+      "result": {
+        "doc_type": "police_report",
+        "confidence": 0.95
+      }
+    },
+    {
+      "tool": "document_reader",
+      "input": "settlement_breakdown.pdf",
+      "result": {
+        "method": "pdf_text",
+        "quality": "high"
+      }
+    },
+    {
+      "tool": "document_classifier",
+      "input": "settlement_breakdown.pdf",
+      "result": {
+        "doc_type": "settlement_breakdown",
+        "confidence": 0.95
+      }
+    },
+    {
+      "tool": "field_extractor",
+      "input": "adjuster_note.png",
+      "result": {
+        "vin": "418GCM82633AG8935",
+        "date_of_loss": "02/14/2026",
+        "insurance_payout": null,
+        "loan_balance": null
+      }
+    },
+    {
+      "tool": "field_extractor",
+      "input": "finance_agreement.png",
+      "result": {
+        "vin": "1HGCMB2633A004352",
+        "date_of_loss": null,
+        "insurance_payout": null,
+        "loan_balance": null
+      }
+    },
+    {
+      "tool": "field_extractor",
+      "input": "police_report.pdf",
+      "result": {
+        "vin": "1HGCM82633A004352",
+        "date_of_loss": "02/14/2026",
+        "insurance_payout": null,
+        "loan_balance": null
+      }
+    },
+    {
+      "tool": "field_extractor",
+      "input": "settlement_breakdown.pdf",
+      "result": {
+        "vin": "1HGCM82633A004352",
+        "date_of_loss": "02/14/2026",
+        "insurance_payout": "18750.00",
+        "loan_balance": "22340.55"
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "vin",
+      "result": {
+        "value": "1HGCM82633A004352",
+        "conflict": true
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "date_of_loss",
+      "result": {
+        "value": "02/14/2026",
+        "conflict": false
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "insurance_payout",
+      "result": {
+        "value": "18750.00",
+        "conflict": false
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "loan_balance",
+      "result": {
+        "value": "22340.55",
+        "conflict": false
+      }
+    },
+    {
+      "tool": "field_validator",
+      "input": {
+        "vin": "1HGCM82633A004352"
+      },
+      "result": {
+        "valid": true,
+        "reason": null
+      }
+    },
+    {
+      "tool": "field_validator",
+      "input": {
+        "date_of_loss": "02/14/2026"
+      },
+      "result": {
+        "valid": true,
+        "reason": null
+      }
+    },
+    {
+      "tool": "field_validator",
+      "input": {
+        "insurance_payout": "18750.00"
+      },
+      "result": {
+        "valid": true,
+        "reason": null
+      }
+    },
+    {
+      "tool": "field_validator",
+      "input": {
+        "loan_balance": "22340.55"
+      },
+      "result": {
+        "valid": true,
+        "reason": null
+      }
+    }
+  ]
+}

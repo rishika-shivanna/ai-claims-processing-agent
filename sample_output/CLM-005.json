@@ -1,0 +1,238 @@
+{
+  "claim_id": "CLM-005",
+  "status": "incomplete",
+  "extracted_fields": {
+    "vin": {
+      "value": "1N4AL3AP8JC231504",
+      "confidence": "medium",
+      "source": "police_report.png",
+      "reason": "Low-confidence extraction; see tools_used log."
+    },
+    "date_of_loss": {
+      "value": "03/28/2026",
+      "confidence": "high",
+      "source": "police_report.png",
+      "reason": "Best guess based on highest extraction confidence (high)."
+    },
+    "insurance_payout": {
+      "value": "31500.00",
+      "confidence": "high",
+      "source": "settlement_breakdown.pdf",
+      "reason": null
+    },
+    "loan_balance": {
+      "value": "35120.75",
+      "confidence": "high",
+      "source": "settlement_breakdown.pdf",
+      "reason": null
+    }
+  },
+  "documents": {
+    "identified": [
+      {
+        "file": "police_report.png",
+        "type": "police_report"
+      },
+      {
+        "file": "settlement_breakdown.pdf",
+        "type": "settlement_breakdown"
+      }
+    ],
+    "missing": [
+      "finance_agreement"
+    ],
+    "duplicates": []
+  },
+  "issues": [
+    {
+      "type": "inconsistency",
+      "description": "date of loss disagrees across documents",
+      "details": "police_report.png: 03/22/2026; settlement_breakdown.pdf: 03/28/2026",
+      "guess": "03/28/2026",
+      "guess_reason": "Best guess based on highest extraction confidence (high)."
+    },
+    {
+      "type": "missing",
+      "description": "Missing required document: finance_agreement",
+      "details": null
+    },
+    {
+      "type": "needs_review",
+      "description": "Customer reply requires manual follow-up",
+      "details": "Customer unable to find finance agreement document, but provided lender and account information."
+    }
+  ],
+  "next_action": {
+    "type": "escalate",
+    "message": "Conflicting values across official documents that customer input can't resolve -- route to an adjuster to confirm the correct figure. Separately, while this is under adjuster review: missing document(s): finance_agreement."
+  },
+  "llm_backend": "ollama",
+  "customer_replied": true,
+  "tools_used": [
+    {
+      "tool": "document_reader",
+      "input": "customer_reply.txt",
+      "result": {
+        "method": "plain_text",
+        "quality": "high"
+      }
+    },
+    {
+      "tool": "document_classifier",
+      "input": "customer_reply.txt",
+      "result": {
+        "doc_type": "customer_reply",
+        "confidence": 0.95
+      }
+    },
+    {
+      "tool": "document_reader",
+      "input": "police_report.png",
+      "result": {
+        "method": "ocr",
+        "quality": "medium"
+      }
+    },
+    {
+      "tool": "document_classifier",
+      "input": "police_report.png",
+      "result": {
+        "doc_type": "police_report",
+        "confidence": 0.95
+      }
+    },
+    {
+      "tool": "document_reader",
+      "input": "settlement_breakdown.pdf",
+      "result": {
+        "method": "pdf_text",
+        "quality": "high"
+      }
+    },
+    {
+      "tool": "document_classifier",
+      "input": "settlement_breakdown.pdf",
+      "result": {
+        "doc_type": "settlement_breakdown",
+        "confidence": 0.95
+      }
+    },
+    {
+      "tool": "field_extractor",
+      "input": "police_report.png",
+      "result": {
+        "vin": "1N4AL3AP8JC231504",
+        "date_of_loss": "03/22/2026",
+        "insurance_payout": null,
+        "loan_balance": null
+      }
+    },
+    {
+      "tool": "field_extractor",
+      "input": "settlement_breakdown.pdf",
+      "result": {
+        "vin": "1N4AL3AP8JC231504",
+        "date_of_loss": "03/28/2026",
+        "insurance_payout": "31500.00",
+        "loan_balance": "35120.75"
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "vin",
+      "result": {
+        "value": "1N4AL3AP8JC231504",
+        "conflict": false
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "date_of_loss",
+      "result": {
+        "value": "03/28/2026",
+        "conflict": true
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "insurance_payout",
+      "result": {
+        "value": "31500.00",
+        "conflict": false
+      }
+    },
+    {
+      "tool": "consistency_checker",
+      "input": "loan_balance",
+      "result": {
+        "value": "35120.75",
+        "conflict": false
+      }
+    },
+    {
+      "tool": "field_validator",
+      "input": {
+        "vin": "1N4AL3AP8JC231504"
+      },
+      "result": {
+        "valid": true,
+        "reason": null
+      }
+    },
+    {
+      "tool": "field_validator",
+      "input": {
+        "date_of_loss": "03/28/2026"
+      },
+      "result": {
+        "valid": true,
+        "reason": null
+      }
+    },
+    {
+      "tool": "field_validator",
+      "input": {
+        "insurance_payout": "31500.00"
+      },
+      "result": {
+        "valid": true,
+        "reason": null
+      }
+    },
+    {
+      "tool": "field_validator",
+      "input": {
+        "loan_balance": "35120.75"
+      },
+      "result": {
+        "valid": true,
+        "reason": null
+      }
+    },
+    {
+      "tool": "reply_parser",
+      "input": {
+        "open_questions": [
+          "date_of_loss",
+          "document:finance_agreement"
+        ]
+      },
+      "result": {
+        "backend": "ollama",
+        "result": {
+          "resolved": {
+            "lender": "Bank of America Auto",
+            "account_number": "8841-5567-2203",
+            "monthly_payment": "$487.33",
+            "balance_estimate": "around $35,000 (or a little more)"
+          },
+          "still_open": [
+            "date_of_loss",
+            "document:finance_agreement"
+          ],
+          "notes": "Customer unable to find finance agreement document, but provided lender and account information."
+        }
+      }
+    }
+  ]
+}
