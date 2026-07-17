@@ -1,10 +1,3 @@
-"""
-Tool: field_validator
-Pure, deterministic rule checks -- no LLM involved. These are the checks
-listed explicitly in the spec (VIN format, valid date, numeric amounts).
-Kept separate from extraction so extraction confidence and validation
-correctness are two independently inspectable signals.
-"""
 from __future__ import annotations
 import re
 from datetime import datetime

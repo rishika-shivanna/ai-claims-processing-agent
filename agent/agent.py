@@ -7,8 +7,10 @@ fixed pipeline:
 
   - OCR is only invoked for image/scanned files; clean PDFs skip straight to
     text extraction.
-  - The duplicate/consistency tools are only invoked when there's actually
-    more than one document to compare.
+  - The duplicate/consistency checks run for every claim, but only produce
+    a logged tool entry or an issue when there's actually more than one
+    document of the same type to compare -- a single document trivially
+    has nothing to conflict with.
   - The customer-reply reconciliation step only runs if a customer_reply.txt
     is present in the claim folder.
   - The LLM is only called for the free-text reply parsing and the

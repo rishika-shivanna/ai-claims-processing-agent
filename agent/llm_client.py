@@ -67,7 +67,7 @@ def _call_ollama(system: str, user: str) -> str:
         return json.loads(resp.read())["response"]
 
 
-def call_llm(system: str, user: str) -> tuple[str, str]:
+def call_llm(system: str, user: str) -> tuple[str | None, str]:
     """Returns (response_text, backend_used)."""
     if _anthropic_available():
         return _call_anthropic(system, user), "anthropic"
@@ -187,8 +187,36 @@ def chat_reply(claim_context: dict, conversation: list[dict]) -> tuple[str, str]
     text, backend = call_llm(system, user)
     if text:
         return text.strip(), backend
-    missing = claim_context.get("missing_fields", []) + claim_context.get("missing_docs", [])
-    if missing:
-        return (f"Thanks for reaching out about claim {claim_context.get('claim_id')}. "
-                f"We're still missing: {', '.join(missing)}. Could you help with those?"), "rule_based"
-    return "Thanks -- your claim looks complete on our end. We'll follow up shortly.", "rule_based"
+
+    # Rule-based fallback -- no LLM configured. Unlike a single canned message,
+    # this actually scans everything the customer has typed so far in the
+    # conversation and stops asking about anything they've already answered.
+    all_customer_text = " ".join(m["content"] for m in conversation if m["role"] == "user")
+    vin_found = re.search(r"\b[A-HJ-NPR-Z0-9]{17}\b", all_customer_text.upper())
+    money_found = re.search(r"\$\s?[\d,]+(?:\.\d{2})?", all_customer_text)
+
+    missing = list(claim_context.get("missing_fields", [])) + list(claim_context.get("missing_docs", []))
+    still_missing = []
+    acknowledged = []
+    for item in missing:
+        if "vin" in item.lower() and vin_found:
+            acknowledged.append(f"VIN {vin_found.group(0)}")
+            continue
+        if ("payout" in item.lower() or "balance" in item.lower()) and money_found:
+            acknowledged.append(f"{item.replace('_', ' ')} of {money_found.group(0)}")
+            continue
+        still_missing.append(item)
+
+    is_first_turn = len(conversation) <= 1
+    parts = []
+    if acknowledged and not is_first_turn:
+        parts.append("Got it, thanks -- noted " + ", ".join(acknowledged) + ".")
+    if still_missing:
+        parts.append(f"We still need: {', '.join(still_missing)}. Could you help with "
+                      f"{'that' if len(still_missing) == 1 else 'those'}?")
+    elif acknowledged:
+        parts.append("That's everything we needed -- we'll re-run the claim now.")
+    else:
+        parts.append(f"Thanks for reaching out about claim {claim_context.get('claim_id')}. "
+                      f"We're still missing: {', '.join(missing)}. Could you help with those?")
+    return " ".join(parts), "rule_based"
